@@ -1,5 +1,6 @@
 const React = require('react');
 const LocationStore = require('./stores/LocationStore');
+const LocationActions = require('./actions/LocationActions');
 
 const App = React.createClass({
   getInitialState() {
@@ -8,6 +9,8 @@ const App = React.createClass({
 
   componentDidMount() {
     LocationStore.listen(this.onChange);
+
+    LocationActions.fetchLocations();
   },
 
   componentWillUnmount() {
@@ -19,6 +22,19 @@ const App = React.createClass({
   },
 
   render() {
+    if (this.state.errorMessage) {
+      return (
+        <div>Something is wrong</div>
+      );
+    }
+
+    if (!this.state.locations.length) {
+      return (
+        <div>
+          <img src="https://www.ecisurveys.com/Images/spinner.gif" />
+        </div>
+      )
+    }
     return (
       <ul>
         {this.state.locations.map((location) => {
